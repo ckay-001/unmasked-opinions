@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="paper">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Unmasked Opinions</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ==========================================================================
+       MINIMALIST TACTILE PALETTES (Toned-down Paper & Paper Dark)
+       ========================================================================== */
+    :root,
+    [data-theme="paper"] {
+      --bg-base: #f9f8f4;
+      --bg-glow-1: rgba(0, 0, 0, 0.02);
+      --bg-glow-2: rgba(0, 0, 0, 0.01);
+      --card-bg: #ffffff;
+      --card-inner: #f2f0eb;
+      --card-border: rgba(0, 0, 0, 0.08);
+      --card-highlight: #ffffff;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --text-dim: #9ca3af;
+      --accent-primary: #111827;
+      --accent-secondary: #374151;
+      --accent-grad: #111827;
+      --accent-shadow: rgba(0, 0, 0, 0.06);
+      --pill-bg: #f3f4f6;
+      --pill-border: rgba(0, 0, 0, 0.06);
+      --shield-overlay: rgba(249, 248, 244, 0.75);
+      --shield-card: #ffffff;
+    }
+
+    [data-theme="paper-dark"] {
+      --bg-base: #141416;
+      --bg-glow-1: rgba(255, 255, 255, 0.02);
+      --bg-glow-2: rgba(255, 255, 255, 0.01);
+      --card-bg: #1c1c1e;
+      --card-inner: #242428;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-highlight: rgba(255, 255, 255, 0.04);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent-primary: #f3f4f6;
+      --accent-secondary: #d1d5db;
+      --accent-grad: #f3f4f6;
+      --accent-shadow: rgba(0, 0, 0, 0.3);
+      --pill-bg: #27272a;
+      --pill-border: rgba(255, 255, 255, 0.06);
+      --shield-overlay: rgba(20, 20, 22, 0.80);
+      --shield-card: #1c1c1e;
+    }
+
+    [data-theme="velvet"] {
+      --bg-base: #140b14;
+      --bg-glow-1: rgba(244, 63, 94, 0.15);
+      --bg-glow-2: rgba(251, 191, 36, 0.08);
+      --card-bg: #1f121f;
+      --card-inner: #160a17;
+      --card-border: rgba(244, 63, 94, 0.2);
+      --card-highlight: rgba(255, 255, 255, 0.06);
+      --text-main: #fdf2f8;
+      --text-muted: #d8b4ce;
+      --text-dim: #9d7393;
+      --accent-primary: #f43f5e;
+      --accent-secondary: #fbbf24;
+      --accent-grad: linear-gradient(135deg, #f43f5e 0%, #d97706 100%);
+      --accent-shadow: rgba(244, 63, 94, 0.25);
+      --pill-bg: rgba(244, 63, 94, 0.1);
+      --pill-border: rgba(244, 63, 94, 0.2);
+      --shield-overlay: rgba(20, 11, 20, 0.7);
+      --shield-card: #1f121f;
+    }
+
+    [data-theme="cyber"] {
+      --bg-base: #090518;
+      --bg-glow-1: rgba(168, 85, 247, 0.18);
+      --bg-glow-2: rgba(6, 182, 212, 0.12);
+      --card-bg: #140f2b;
+      --card-inner: #0b0718;
+      --card-border: rgba(6, 182, 212, 0.25);
+      --card-highlight: rgba(255, 255, 255, 0.06);
+      --text-main: #f3e8ff;
+      --text-muted: #a5f3fc;
+      --text-dim: #7c6f9f;
+      --accent-primary: #06b6d4;
+      --accent-secondary: #a855f7;
+      --accent-grad: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+      --accent-shadow: rgba(6, 182, 212, 0.25);
+      --pill-bg: rgba(6, 182, 212, 0.1);
+      --pill-border: rgba(6, 182, 212, 0.25);
+      --shield-overlay: rgba(9, 5, 24, 0.7);
+      --shield-card: #140f2b;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100dvh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .tactile-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 20px -4px var(--accent-shadow);
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tactile-Well {
+      background-color: var(--card-inner);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
+
+    .tactile-Well:focus {
+      border-color: var(--text-muted);
+      outline: none;
+    }
+
+    .btn-primary-tactile {
+      background: var(--accent-grad);
+      color: var(--bg-base);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 12px -2px var(--accent-shadow);
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+
+    [data-theme="paper-dark"] .btn-primary-tactile {
+      color: #141416;
+    }
+
+    .btn-primary-tactile:hover {
+      opacity: 0.92;
+    }
+
+    .btn-primary-tactile:active {
+      transform: scale(0.98);
+    }
+
+    .accent-pill {
+      background: var(--pill-bg);
+      border: 1px solid var(--pill-border);
+      color: var(--text-main);
+    }
+
+    .frosted-shield {
+      background: var(--shield-overlay);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .frosted-modal {
+      background: var(--shield-card);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 16px 32px -8px var(--accent-shadow);
+    }
+
+    .stage-blurred {
+      filter: blur(12px);
+      opacity: 0.25;
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+
+    .stage-clear {
+      filter: blur(0px);
+      opacity: 1;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--pill-border);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="flex flex-col justify-between relative select-none">
+
+  <!-- Ambient Glows -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+    <div class="absolute -top-24 -left-12 w-80 h-80 rounded-full blur-[90px] transition-all duration-500" style="background: var(--bg-glow-1);"></div>
+    <div class="absolute top-1/3 -right-16 w-72 h-72 rounded-full blur-[85px] transition-all duration-500" style="background: var(--bg-glow-2);"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="shrink-0 h-14 px-3.5 border-b z-30 flex items-center transition-colors" style="border-color: var(--card-border); background: var(--shield-overlay);">
+    <div class="max-w-md w-full mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 cursor-pointer min-w-0" onclick="returnToSetupConfirm()">
+        <div class="w-8 h-8 rounded-xl btn-primary-tactile flex items-center justify-center font-display font-extrabold text-sm shrink-0">
+          🎭
+        </div>
+        <h1 class="font-display font-extrabold tracking-tight text-sm sm:text-base truncate" style="color: var(--text-main);">
+          Unmasked Opinions
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="cycleTheme()" title="Switch Palette" class="h-8 px-2.5 rounded-xl accent-pill text-[11px] font-bold transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
+          <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background: var(--accent-primary);"></span>
+          <span id="themeNameLabel">Paper</span>
+        </button>
+
+        <button onclick="loadSampleParty()" title="Demo Players" class="h-8 px-2.5 rounded-xl tactile-card text-[11px] font-bold transition flex items-center gap-1 active:scale-95 whitespace-nowrap" style="color: var(--text-main);">
+          <span>⚡</span>
+          <span>Demo</span>
+        </button>
+
+        <button onclick="openRulesModal()" title="Rules" class="h-8 w-8 rounded-xl tactile-card text-xs font-bold transition flex items-center justify-center active:scale-95" style="color: var(--text-muted);">
+          ?
+        </button>
+
+        <button id="soundToggle" onclick="toggleAudio()" title="Sound" class="h-8 w-8 rounded-xl tactile-card text-xs transition flex items-center justify-center active:scale-95">
+          <span id="soundIcon">🔊</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Viewport Container -->
+  <main class="flex-1 max-w-md w-full mx-auto px-3.5 py-3 flex flex-col overflow-hidden min-h-0 relative">
+
+    <!-- SCREEN 1: SETUP -->
+    <div id="screen-setup" class="flex-1 flex flex-col justify-between gap-3 min-h-0">
+
+      <!-- Players Section -->
+      <section class="tactile-card rounded-2xl p-3.5 flex flex-col gap-2.5 shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-4 rounded-full" style="background: var(--accent-secondary);"></span>
+            <h2 class="font-display font-bold text-xs sm:text-sm uppercase tracking-wider" style="color: var(--text-main);">Players</h2>
+          </div>
+          <span id="playerCounterBadge" class="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full accent-pill">0</span>
+        </div>
+
+        <div class="flex gap-2">
+          <input id="playerNameInput" type="text" placeholder="Enter friend's name..." maxlength="15" 
+            class="flex-1 tactile-Well rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:outline-none placeholder:opacity-50">
+          <button onclick="addPlayerFromInput()" class="btn-primary-tactile px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap">
+            + Add
+          </button>
+        </div>
+
+        <div id="playerChips" class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-0.5 min-h-[30px]"></div>
+      </section>
+
+      <!-- Topic Section -->
+      <section class="tactile-card rounded-2xl p-3.5 flex-1 flex flex-col justify-between gap-2.5 min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between gap-2 shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-4 rounded-full" style="background: var(--accent-secondary);"></span>
+            <h2 class="font-display font-bold text-xs sm:text-sm uppercase tracking-wider" style="color: var(--text-main);">Topic</h2>
+          </div>
+
+          <div class="flex p-0.5 rounded-xl tactile-Well text-[11px] font-bold">
+            <button onclick="setTopicMode('random')" id="modeBtnRandom" class="px-3 py-1 rounded-lg btn-primary-tactile transition whitespace-nowrap">
+              🎲 Random
+            </button>
+            <button onclick="setTopicMode('custom')" id="modeBtnCustom" class="px-3 py-1 rounded-lg transition whitespace-nowrap" style="color: var(--text-muted);">
+              ✍️ Custom
+            </button>
+          </div>
+        </div>
+
+        <!-- MODE 1: Random Topic Selector (Shows description first, then shuffle button) -->
+        <div id="randomTopicView" class="flex-1 flex flex-col justify-between gap-2.5 min-h-0">
+          <div class="grid grid-cols-5 gap-1 shrink-0">
+            <button onclick="filterCategory('all')" class="cat-btn py-1.5 px-1 rounded-xl text-[11px] font-bold text-center truncate transition accent-pill" data-cat="all">✨ All</button>
+            <button onclick="filterCategory('spicy')" class="cat-btn py-1.5 px-1 rounded-xl text-[11px] font-medium text-center truncate transition tactile-Well" data-cat="spicy">🌶️ Spicy</button>
+            <button onclick="filterCategory('quirky')" class="cat-btn py-1.5 px-1 rounded-xl text-[11px] font-medium text-center truncate transition tactile-Well" data-cat="quirky">🧐 Quirky</button>
+            <button onclick="filterCategory('deep')" class="cat-btn py-1.5 px-1 rounded-xl text-[11px] font-medium text-center truncate transition tactile-Well" data-cat="deep">🌌 Deep</button>
+            <button onclick="filterCategory('absurd')" class="cat-btn py-1.5 px-1 rounded-xl text-[11px] font-medium text-center truncate transition tactile-Well" data-cat="absurd">🤪 Chaos</button>
+          </div>
+
+          <!-- Description Box + Shuffle Topic CTA -->
+          <div class="flex-1 tactile-Well rounded-2xl p-4 flex flex-col justify-between gap-3 min-h-0 relative">
+            <div class="space-y-1">
+              <span id="currentCategoryTag" class="text-[10px] font-bold uppercase tracking-widest block" style="color: var(--accent-secondary);">✨ All Combined</span>
+              <p id="topicEntailsText" class="text-xs sm:text-sm font-medium leading-relaxed" style="color: var(--text-muted);"></p>
+            </div>
+
+            <!-- When prompt has been shuffled, display it here -->
+            <div id="activePromptContainer" class="hidden p-3 rounded-xl tactile-card">
+              <p id="promptDisplayText" class="text-xs sm:text-sm font-bold leading-snug select-text" style="color: var(--text-main);"></p>
+            </div>
+
+            <div class="flex items-center justify-between shrink-0 pt-1">
+              <span id="deckCounterTag" class="text-[11px] font-mono" style="color: var(--text-dim);">45 Topics</span>
+              <button onclick="rollRandomPrompt()" class="h-10 px-4 rounded-xl btn-primary-tactile text-xs font-bold flex items-center gap-2 active:scale-95 transition">
+                <span>🎲 Shuffle Topic</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODE 2: Custom Topic -->
+        <div id="customTopicView" class="hidden flex-1 flex flex-col justify-between gap-2 min-h-0">
+          <textarea id="customPromptInput" maxlength="220" placeholder="Type any question or hot take for the group to answer anonymously..." 
+            class="flex-1 w-full tactile-Well rounded-2xl p-3.5 text-sm focus:outline-none resize-none leading-relaxed"></textarea>
+          <div class="flex justify-between items-center text-[11px] px-1 shrink-0" style="color: var(--text-dim);">
+            <span>Everyone answers this exact question</span>
+            <button onclick="clearCustomTopic()" class="underline hover:opacity-80">Clear</button>
+          </div>
+        </div>
+      </section>
+
+      <button onclick="startGame()" class="shrink-0 w-full h-12 btn-primary-tactile font-display font-extrabold rounded-2xl text-sm sm:text-base flex items-center justify-center gap-2 whitespace-nowrap">
+        <span>Begin Anonymous Round</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- SCREEN 2 & 3: VAULT & MINIMALISTIC PRIVACY SHIELD -->
+    <div id="screen-vault" class="hidden flex-1 flex flex-col justify-between min-h-0 relative">
+
+      <!-- Underlying Writing Stage -->
+      <div id="vaultWritingStage" class="flex-1 flex flex-col justify-between gap-2.5 min-h-0 stage-blurred">
+        <div class="tactile-card rounded-2xl p-3 shrink-0">
+          <span class="text-[10px] font-bold uppercase tracking-widest block mb-0.5" style="color: var(--accent-secondary);">Topic</span>
+          <p id="vaultPromptText" class="text-xs sm:text-sm font-bold leading-snug line-clamp-2" style="color: var(--text-main);"></p>
+        </div>
+
+        <div class="tactile-Well rounded-2xl p-3 shrink-0 flex items-start justify-between gap-2.5">
+          <div class="text-xs leading-snug whitespace-normal break-words flex-1">
+            <span class="font-extrabold uppercase tracking-wider text-[10px] block mb-0.5" style="color: var(--accent-secondary);">🎭 Disguise Tip</span>
+            <p id="bluffTipText" class="font-medium" style="color: var(--text-muted);"></p>
+          </div>
+          <button onclick="cycleBluffTip()" title="Next Tip" class="shrink-0 px-2.5 py-1.5 rounded-xl accent-pill text-[11px] font-bold active:scale-95 transition whitespace-nowrap">
+            Next ↻
+          </button>
+        </div>
+
+        <div class="flex-1 flex flex-col gap-1.5 min-h-0">
+          <div class="flex justify-between items-center text-[11px] px-1 shrink-0" style="color: var(--text-dim);">
+            <span class="font-bold uppercase tracking-wider">Your Unfiltered Opinion</span>
+            <span id="charCount" class="font-mono">0 / 350</span>
+          </div>
+          <textarea id="opinionInput" maxlength="350" placeholder="Type your honest thoughts here..." 
+            class="flex-1 w-full tactile-Well rounded-2xl p-3.5 text-sm focus:outline-none resize-none leading-relaxed select-text"></textarea>
+        </div>
+
+        <button onclick="submitOpinion()" class="shrink-0 w-full h-12 btn-primary-tactile font-display font-extrabold rounded-2xl text-sm flex items-center justify-center gap-2 whitespace-nowrap">
+          <span>Seal Take & Pass Phone</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Minimalistic Privacy Shield -->
+      <div id="privacyShieldOverlay" class="frosted-shield absolute inset-0 rounded-2xl z-20 flex flex-col items-center justify-center p-5 text-center">
+        <div class="frosted-modal rounded-3xl p-6 w-full max-w-xs space-y-4">
+          <div class="w-14 h-14 rounded-2xl accent-pill mx-auto flex items-center justify-center text-2xl">
+            🔒
+          </div>
+          <div class="space-y-1">
+            <p class="text-xs font-semibold" style="color: var(--text-muted);">Pass phone to</p>
+            <h3 id="handoffPlayerName" class="text-2xl sm:text-3xl font-display font-extrabold tracking-tight" style="color: var(--text-main);">
+              Player
+            </h3>
+          </div>
+          <button onclick="unlockVaultScreen()" class="w-full py-3.5 btn-primary-tactile font-display font-extrabold rounded-2xl text-xs sm:text-sm active:scale-95 transition">
+            Tap to Write
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SCREEN 3.5: FINAL WRITER LOCK SCREEN -->
+    <div id="screen-lastwriter" class="hidden flex-1 flex flex-col items-center justify-center text-center gap-4 min-h-0">
+      <div class="w-20 h-20 rounded-3xl btn-primary-tactile mx-auto flex items-center justify-center text-3xl cursor-pointer" onclick="finalizeAllSubmissions()">
+        🔒
+      </div>
+      <div class="space-y-1.5 max-w-xs">
+        <h2 class="text-xl font-display font-extrabold" style="color: var(--text-main);">Final Vault Sealed</h2>
+        <p class="text-xs leading-relaxed" style="color: var(--text-muted);">
+          All opinions deposited. Tap below to open consensus deck.
+        </p>
+      </div>
+      <button onclick="finalizeAllSubmissions()" class="w-full max-w-xs h-12 btn-primary-tactile font-display font-extrabold rounded-2xl text-sm">
+        Open Consensus Deck 🔓
+      </button>
+    </div>
+
+    <!-- SCREEN 4: ACCUSATION MATRIX -->
+    <div id="screen-reveal" class="hidden flex-1 flex flex-col justify-between gap-2.5 min-h-0">
+      <div class="flex items-center justify-between gap-2 shrink-0">
+        <span id="cardProgress" class="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-xl accent-pill font-mono shrink-0"></span>
+        <span id="revealPromptReminder" class="text-[11px] font-medium truncate" style="color: var(--text-muted);"></span>
+        <button onclick="toggleScoreboardModal()" class="text-[11px] tactile-card px-3 py-1 rounded-xl font-bold transition whitespace-nowrap shrink-0" style="color: var(--text-main);">
+          🏆 Scores
+        </button>
+      </div>
+
+      <div class="tactile-card rounded-2xl p-4 shrink-0 space-y-1.5 max-h-[34%] flex flex-col">
+        <div class="text-[10px] font-extrabold uppercase tracking-widest flex items-center justify-between shrink-0" style="color: var(--accent-secondary);">
+          <span>📜 Anonymous Statement</span>
+          <span>🗣️ Read Out Loud</span>
+        </div>
+        <blockquote id="revealParagraph" class="text-sm sm:text-base font-semibold leading-snug overflow-y-auto custom-scrollbar pr-1 select-text" style="color: var(--text-main);"></blockquote>
+      </div>
+
+      <div id="votingSection" class="tactile-card rounded-2xl p-3 flex-1 flex flex-col justify-between gap-2 min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between shrink-0">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider" style="color: var(--text-muted);">Who wrote this?</span>
+          <button onclick="autoFillBotVotes()" class="text-[10px] accent-pill px-2.5 py-1 rounded-lg font-bold shrink-0 active:scale-95 transition">
+            🎲 Auto-Vote
+          </button>
+        </div>
+
+        <div id="voterMatrixList" class="flex-1 space-y-1.5 overflow-y-auto custom-scrollbar pr-1 min-h-0"></div>
+
+        <button onclick="revealAuthor()" class="shrink-0 w-full h-11 btn-primary-tactile font-display font-extrabold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1.5 whitespace-nowrap">
+          <span>Unmask True Author</span>
+        </button>
+      </div>
+
+      <div id="outcomeCard" class="hidden tactile-card rounded-2xl p-4 flex-1 flex flex-col justify-between text-center min-h-0">
+        <div class="my-auto space-y-2.5">
+          <span class="text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-0.5 rounded-full accent-pill">Author Unmasked</span>
+          <h4 id="authorRevealName" class="text-2xl sm:text-3xl font-display font-extrabold" style="color: var(--text-main);"></h4>
+          <div id="roundPointRecap" class="text-xs text-left tactile-Well p-3 rounded-xl space-y-1.5 leading-relaxed max-h-36 overflow-y-auto custom-scrollbar"></div>
+        </div>
+        <button onclick="nextCard()" class="shrink-0 w-full h-11 btn-primary-tactile font-display font-bold rounded-xl text-sm flex items-center justify-center gap-1.5 whitespace-nowrap">
+          <span id="nextCardBtnText">Next Opinion Card</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 5: FINAL PODIUM -->
+    <div id="screen-gameover" class="hidden flex-1 flex flex-col justify-between gap-2.5 min-h-0">
+      <div class="text-center shrink-0">
+        <h2 class="text-xl sm:text-2xl font-display font-extrabold" style="color: var(--text-main);">👑 All Opinions Unmasked</h2>
+        <p class="text-[11px]" style="color: var(--text-muted);">Final group standings & awards</p>
+      </div>
+      <div id="specialAwardsGrid" class="grid grid-cols-2 gap-2 shrink-0 text-left"></div>
+      <div id="podiumList" class="tactile-card rounded-2xl p-3 flex-1 space-y-1.5 overflow-y-auto custom-scrollbar text-left min-h-0"></div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="playAnotherRound()" class="flex-1 h-11 btn-primary-tactile font-display font-bold rounded-xl text-xs sm:text-sm whitespace-nowrap">
+          Next Topic (Keep Scores)
+        </button>
+        <button onclick="resetToSetup()" class="px-4 h-11 tactile-card font-bold rounded-xl text-xs whitespace-nowrap" style="color: var(--text-muted);">
+          Reset
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Scoreboard Modal -->
+  <div id="scoreModal" class="hidden fixed inset-0 z-50 frosted-shield flex items-center justify-center p-4">
+    <div class="frosted-modal w-full max-w-sm rounded-3xl p-5 space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b" style="border-color: var(--card-border);">
+        <h3 class="font-display font-bold text-base flex items-center gap-2" style="color: var(--text-main);"><span>🏆</span> Scoreboard</h3>
+        <button onclick="toggleScoreboardModal()" class="text-sm p-1" style="color: var(--text-muted);">✕</button>
+      </div>
+      <div id="scoreList" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar"></div>
+      <button onclick="toggleScoreboardModal()" class="w-full btn-primary-tactile font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">Back to Game</button>
+    </div>
+  </div>
+
+  <!-- Rules Modal -->
+  <div id="rulesModal" class="hidden fixed inset-0 z-50 frosted-shield flex items-center justify-center p-4">
+    <div class="frosted-modal w-full max-w-md rounded-3xl p-5 space-y-4 text-xs leading-relaxed" style="color: var(--text-muted);">
+      <div class="flex items-center justify-between pb-2 border-b" style="border-color: var(--card-border);">
+        <h3 class="font-display font-bold text-base" style="color: var(--text-main);">📖 How Unmasked Opinions Works</h3>
+        <button onclick="closeRulesModal()" class="text-sm p-1" style="color: var(--text-muted);">✕</button>
+      </div>
+      <ol class="space-y-2.5 list-decimal list-inside">
+        <li><strong style="color: var(--text-main);">No Anchoring Bias:</strong> Write in secret behind the privacy shield.</li>
+        <li><strong style="color: var(--text-main);">Randomized Handoff & Shuffle:</strong> Order of writers is randomized so nobody knows who went first or last.</li>
+        <li><strong style="color: var(--text-main);">Read & Accuse:</strong> Debate whose style each paragraph is and submit your votes.</li>
+      </ol>
+      <button onclick="closeRulesModal()" class="w-full btn-primary-tactile font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider">Got It</button>
+    </div>
+  </div>
+
+  <!-- Audio & Game Engine -->
+  <script>
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function toggleAudio() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+      if (soundEnabled) sfxClick();
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      initAudio();
+      setTimeout(() => {
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+      }, delay);
+    }
+
+    function sfxClick() { playTone(580, 'sine', 0.05); }
+    function sfxUnblur() { playTone(420, 'sine', 0.08); playTone(640, 'sine', 0.12, 50); }
+    function sfxVaultSeal() { playTone(260, 'triangle', 0.18); playTone(190, 'sine', 0.25, 60); }
+    function sfxFanfare() { playTone(440, 'triangle', 0.1); playTone(554, 'triangle', 0.1, 90); playTone(659, 'triangle', 0.25, 180); }
+  </script>
+
+  <script>
+    const THEMES = [
+      { id: 'paper', label: 'Paper' },
+      { id: 'paper-dark', label: 'Paper Dark' },
+      { id: 'velvet', label: 'Velvet' },
+      { id: 'cyber', label: 'Cyber' }
+    ];
+    let currentThemeIndex = 0;
+
+    function cycleTheme() {
+      sfxClick();
+      currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+      const theme = THEMES[currentThemeIndex];
+      document.documentElement.setAttribute('data-theme', theme.id);
+      document.getElementById('themeNameLabel').textContent = theme.label;
+    }
+
+    const TOPIC_METADATA = {
+      all: {
+        title: "✨ All Combined",
+        entails: "A diverse mix of everyday hot takes, weird habits, deep reflections, and chaotic hypotheticals."
+      },
+      spicy: {
+        title: "🌶️ Spicy Takes",
+        entails: "Controversial real-life opinions on culture, relationships, food, and social norms."
+      },
+      quirky: {
+        title: "🧐 Quirky Habits",
+        entails: "Peculiar personal rituals, secret behaviors, and harmless hills people are ready to die on."
+      },
+      deep: {
+        title: "🌌 Deep Thoughts",
+        entails: "Honest, philosophical reflections on growth, friendship, truth, and life's unspoken lessons."
+      },
+      absurd: {
+        title: "🤪 Pure Chaos",
+        entails: "Unhinged hypothetical survival scenarios and mischievous mischief."
+      }
+    };
+
+    const PROMPTS = {
+      spicy: [
+        "What is your honest, unfiltered opinion on hugs?",
+        "Which widely praised movie or TV show is actually completely unwatchable?",
+        "What is an unspoken social rule that everyone pretends to respect but you secretly despise?",
+        "What is one piece of common relationship advice that is actually terrible?",
+        "What everyday food or drink is overrated to the point of pure delusion?"
+      ],
+      quirky: [
+        "If you could legally ban one annoying habit from public transport, what would it be?",
+        "What is something weird you do when you are completely alone that you would never admit in person?",
+        "What harmless, ridiculous hill are you 100% prepared to die on?",
+        "What is the most useless modern invention that somehow became wildly popular?"
+      ],
+      deep: [
+        "What is something you believed deeply five years ago that you now realize was completely wrong?",
+        "Is 100% honesty always healthy in a close friendship, or are white lies essential?",
+        "What is the hardest truth about adulthood that nobody properly prepares you for?"
+      ],
+      absurd: [
+        "If animals could suddenly talk, which species would be the rudest to humans and why?",
+        "If you had to survive a zombie apocalypse with only one person in this room, who are you picking?",
+        "If you were arrested tomorrow with zero explanation, what would your friends assume you did?"
+      ]
+    };
+
+    const BLUFF_TIPS = [
+      "Borrow a phrase or punctuation style that another friend in the circle always uses.",
+      "If you normally write short texts, write two dramatic, overly formal sentences instead.",
+      "Drop a specific detail or reference that points toward someone else's favorite hobby.",
+      "Switch up your capitalization or use exclamation marks the opposite way you usually do."
+    ];
+
+    let activeCategory = 'all';
+    let topicMode = 'random';
+    let currentSelectedPrompt = "";
+    let bluffTipIndex = 0;
+
+    let players = [];
+    let randomizedQueue = [];
+    let currentQueueIndex = 0;
+    let submissions = [];
+    let shuffledDeck = [];
+    let currentCardIndex = 0;
+    let voterSelections = {};
+
+    const screens = {
+      setup: document.getElementById('screen-setup'),
+      vault: document.getElementById('screen-vault'),
+      lastwriter: document.getElementById('screen-lastwriter'),
+      reveal: document.getElementById('screen-reveal'),
+      gameover: document.getElementById('screen-gameover')
+    };
+
+    function showScreen(name) {
+      Object.keys(screens).forEach(key => screens[key].classList.add('hidden'));
+      screens[name].classList.remove('hidden');
+    }
+
+    function setTopicMode(mode) {
+      sfxClick();
+      topicMode = mode;
+      const randomView = document.getElementById('randomTopicView');
+      const customView = document.getElementById('customTopicView');
+      const btnRandom = document.getElementById('modeBtnRandom');
+      const btnCustom = document.getElementById('modeBtnCustom');
+
+      if (mode === 'random') {
+        randomView.classList.remove('hidden');
+        customView.classList.add('hidden');
+        btnRandom.className = "px-3 py-1 rounded-lg btn-primary-tactile transition whitespace-nowrap";
+        btnCustom.className = "px-3 py-1 rounded-lg transition whitespace-nowrap";
+        btnCustom.style.color = "var(--text-muted)";
+      } else {
+        randomView.classList.add('hidden');
+        customView.classList.remove('hidden');
+        btnCustom.className = "px-3 py-1 rounded-lg btn-primary-tactile transition whitespace-nowrap";
+        btnRandom.className = "px-3 py-1 rounded-lg transition whitespace-nowrap";
+        btnRandom.style.color = "var(--text-muted)";
+        document.getElementById('customPromptInput').focus();
+      }
+    }
+
+    function clearCustomTopic() {
+      sfxClick();
+      document.getElementById('customPromptInput').value = '';
+    }
+
+    function getPoolForCategory(cat) {
+      if (cat === 'all') {
+        return [...PROMPTS.spicy, ...PROMPTS.quirky, ...PROMPTS.deep, ...PROMPTS.absurd];
+      }
+      return PROMPTS[cat] || PROMPTS.spicy;
+    }
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = "cat-btn py-1.5 px-1 rounded-xl text-[11px] font-bold text-center truncate transition accent-pill";
+        } else {
+          btn.className = "cat-btn py-1.5 px-1 rounded-xl text-[11px] font-medium text-center truncate transition tactile-Well";
+        }
+      });
+      const meta = TOPIC_METADATA[cat];
+      const pool = getPoolForCategory(cat);
+      document.getElementById('currentCategoryTag').textContent = meta.title;
+      document.getElementById('topicEntailsText').textContent = meta.entails;
+      document.getElementById('deckCounterTag').textContent = `${pool.length} Topics`;
+
+      // Hide active prompt container and show description until shuffle is clicked
+      document.getElementById('activePromptContainer').classList.add('hidden');
+      currentSelectedPrompt = "";
+    }
+
+    function rollRandomPrompt() {
+      sfxClick();
+      const pool = getPoolForCategory(activeCategory);
+      const candidates = pool.filter(p => p !== currentSelectedPrompt);
+      currentSelectedPrompt = candidates[Math.floor(Math.random() * candidates.length)] || pool[0];
+      
+      const promptBox = document.getElementById('activePromptContainer');
+      const promptText = document.getElementById('promptDisplayText');
+      promptText.textContent = `"${currentSelectedPrompt}"`;
+      promptBox.classList.remove('hidden');
+    }
+
+    function addPlayerFromInput() {
+      const input = document.getElementById('playerNameInput');
+      const name = input.value.trim();
+      if (!name) return;
+      if (players.length >= 10) {
+        showToast("Maximum 10 players!");
+        return;
+      }
+      if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+        showToast("Player already added!");
+        return;
+      }
+
+      players.push({
+        id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        name: name,
+        score: 0,
+        detectiveHits: 0,
+        chameleonWins: 0
+      });
+
+      input.value = '';
+      sfxClick();
+      renderPlayerChips();
+    }
+
+    function removePlayer(id) {
+      players = players.filter(p => p.id !== id);
+      sfxClick();
+      renderPlayerChips();
+    }
+
+    function renderPlayerChips() {
+      const container = document.getElementById('playerChips');
+      const counter = document.getElementById('playerCounterBadge');
+      counter.textContent = `${players.length}`;
+
+      if (players.length === 0) {
+        container.innerHTML = `<span class="text-xs italic opacity-60">No players added yet</span>`;
+        return;
+      }
+
+      container.innerHTML = players.map(p => `
+        <span class="inline-flex items-center gap-1.5 tactile-Well px-3 py-1 rounded-xl text-xs font-bold shrink-0">
+          <span>${escapeHtml(p.name)}</span>
+          <button onclick="removePlayer('${p.id}')" class="opacity-60 hover:opacity-100 font-extrabold ml-0.5" style="color: var(--accent-secondary);">×</button>
+        </span>
+      `).join('');
+    }
+
+    function loadSampleParty() {
+      players = [
+        { id: 'p1', name: 'Liam', score: 0, detectiveHits: 0, chameleonWins: 0, isSimulated: true },
+        { id: 'p2', name: 'Maya', score: 0, detectiveHits: 0, chameleonWins: 0, isSimulated: true },
+        { id: 'p3', name: 'Devon', score: 0, detectiveHits: 0, chameleonWins: 0, isSimulated: true },
+        { id: 'p4', name: 'Chloe', score: 0, detectiveHits: 0, chameleonWins: 0, isSimulated: true }
+      ];
+      renderPlayerChips();
+      sfxFanfare();
+      showToast("Loaded 4 demo players!");
+    }
+
+    function startGame() {
+      if (players.length < 3) {
+        showToast("Add at least 3 players (or tap Demo)!");
+        return;
+      }
+
+      if (topicMode === 'random' && !currentSelectedPrompt) {
+        rollRandomPrompt();
+      } else if (topicMode === 'custom') {
+        const customVal = document.getElementById('customPromptInput').value.trim();
+        if (!customVal) {
+          showToast("Type a custom topic first!");
+          return;
+        }
+        currentSelectedPrompt = customVal;
+      }
+
+      randomizedQueue = [...players];
+      for (let i = randomizedQueue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [randomizedQueue[i], randomizedQueue[j]] = [randomizedQueue[j], randomizedQueue[i]];
+      }
+
+      submissions = [];
+      currentQueueIndex = 0;
+      showScreen('vault');
+      prepareBlurredHandoff();
+    }
+
+    function prepareBlurredHandoff() {
+      const player = randomizedQueue[currentQueueIndex];
+      const stage = document.getElementById('vaultWritingStage');
+      const shield = document.getElementById('privacyShieldOverlay');
+
+      stage.classList.remove('stage-clear');
+      stage.classList.add('stage-blurred');
+      shield.classList.remove('opacity-0', 'pointer-events-none', 'invisible');
+
+      document.getElementById('opinionInput').value = '';
+      updateCharCount();
+
+      document.getElementById('handoffPlayerName').textContent = player.name;
+      document.getElementById('vaultPromptText').textContent = `"${currentSelectedPrompt}"`;
+      bluffTipIndex = Math.floor(Math.random() * BLUFF_TIPS.length);
+      document.getElementById('bluffTipText').textContent = BLUFF_TIPS[bluffTipIndex];
+    }
+
+    function unlockVaultScreen() {
+      sfxUnblur();
+      const player = randomizedQueue[currentQueueIndex];
+      const stage = document.getElementById('vaultWritingStage');
+      const shield = document.getElementById('privacyShieldOverlay');
+
+      shield.classList.add('opacity-0', 'pointer-events-none', 'invisible');
+      stage.classList.remove('stage-blurred');
+      stage.classList.add('stage-clear');
+
+      const textarea = document.getElementById('opinionInput');
+      if (player.isSimulated) {
+        textarea.value = `Honestly, regarding "${currentSelectedPrompt.replace(/\?/g, '')}"—keep it straightforward!`;
+      } else {
+        textarea.value = '';
+      }
+      updateCharCount();
+      setTimeout(() => textarea.focus(), 180);
+    }
+
+    function cycleBluffTip() {
+      sfxClick();
+      bluffTipIndex = (bluffTipIndex + 1) % BLUFF_TIPS.length;
+      document.getElementById('bluffTipText').textContent = BLUFF_TIPS[bluffTipIndex];
+    }
+
+    document.getElementById('opinionInput').addEventListener('input', updateCharCount);
+
+    function updateCharCount() {
+      const count = document.getElementById('opinionInput').value.length;
+      document.getElementById('charCount').textContent = `${count} / 350`;
+    }
+
+    function submitOpinion() {
+      const text = document.getElementById('opinionInput').value.trim();
+      if (!text) {
+        showToast("Write your opinion before sealing!");
+        return;
+      }
+
+      sfxVaultSeal();
+      submissions.push({
+        authorId: randomizedQueue[currentQueueIndex].id,
+        authorName: randomizedQueue[currentQueueIndex].name,
+        text: text
+      });
+
+      currentQueueIndex++;
+      if (currentQueueIndex < randomizedQueue.length) {
+        prepareBlurredHandoff();
+      } else {
+        showScreen('lastwriter');
+      }
+    }
+
+    function finalizeAllSubmissions() {
+      sfxFanfare();
+      shuffledDeck = [...submissions];
+      for (let i = shuffledDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
+      }
+      currentCardIndex = 0;
+      startCardReveal();
+    }
+
+    function startCardReveal() {
+      const card = shuffledDeck[currentCardIndex];
+      document.getElementById('cardProgress').textContent = `Opinion ${currentCardIndex + 1} / ${shuffledDeck.length}`;
+      document.getElementById('revealPromptReminder').textContent = currentSelectedPrompt;
+      document.getElementById('revealParagraph').textContent = `"${card.text}"`;
+
+      voterSelections = {};
+      renderVoterMatrix();
+
+      document.getElementById('votingSection').classList.remove('hidden');
+      document.getElementById('outcomeCard').classList.add('hidden');
+
+      const nextBtnText = document.getElementById('nextCardBtnText');
+      nextBtnText.textContent = (currentCardIndex + 1 < shuffledDeck.length) ? 'Next Opinion Card' : 'View Final Standings';
+
+      showScreen('reveal');
+    }
+
+    function renderVoterMatrix() {
+      const container = document.getElementById('voterMatrixList');
+      container.innerHTML = players.map(voter => {
+        const selectedSuspect = voterSelections[voter.id] || '';
+        const suspectButtons = players.map(suspect => {
+          const isChosen = selectedSuspect === suspect.id;
+          return `
+            <button onclick="selectSuspectForVoter('${voter.id}', '${suspect.id}')" 
+              class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${isChosen ? 'btn-primary-tactile' : 'tactile-Well opacity-80 hover:opacity-100'}">
+              ${escapeHtml(suspect.name)}
+            </button>
+          `;
+        }).join('');
+
+        return `
+          <div class="p-2.5 tactile-Well rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-extrabold" style="color: var(--text-main);">${escapeHtml(voter.name)}</span>
+              <span class="text-[10px] uppercase font-bold" style="color: var(--text-dim);">accuses:</span>
+            </div>
+            <div class="flex flex-wrap gap-1">
+              ${suspectButtons}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectSuspectForVoter(voterId, suspectId) {
+      sfxClick();
+      if (voterSelections[voterId] === suspectId) {
+        delete voterSelections[voterId];
+      } else {
+        voterSelections[voterId] = suspectId;
+      }
+      renderVoterMatrix();
+    }
+
+    function autoFillBotVotes() {
+      sfxClick();
+      players.forEach(voter => {
+        const randomSuspect = players[Math.floor(Math.random() * players.length)];
+        voterSelections[voter.id] = randomSuspect.id;
+      });
+      renderVoterMatrix();
+    }
+
+    function revealAuthor() {
+      sfxFanfare();
+      if (window.confetti) {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      }
+
+      const card = shuffledDeck[currentCardIndex];
+      const author = players.find(p => p.id === card.authorId);
+
+      document.getElementById('votingSection').classList.add('hidden');
+      document.getElementById('outcomeCard').classList.remove('hidden');
+      document.getElementById('authorRevealName').textContent = author.name;
+
+      const nonAuthorPlayers = players.filter(p => p.id !== author.id);
+      const correctDetectives = [];
+
+      nonAuthorPlayers.forEach(detective => {
+        if (voterSelections[detective.id] === author.id) {
+          detective.score += 1;
+          detective.detectiveHits = (detective.detectiveHits || 0) + 1;
+          correctDetectives.push(detective.name);
+        }
+      });
+
+      const majorityThreshold = Math.floor(nonAuthorPlayers.length / 2) + 1;
+      const authorFooledMajority = correctDetectives.length < majorityThreshold;
+
+      let recapHtml = '';
+      if (correctDetectives.length > 0) {
+        recapHtml += `<div><strong>🕵️ Detectives (+1 pt):</strong> ${correctDetectives.map(escapeHtml).join(', ')} spotted ${escapeHtml(author.name)}!</div>`;
+      } else {
+        recapHtml += `<div><strong>🕵️ Detectives:</strong> Nobody guessed ${escapeHtml(author.name)}!</div>`;
+      }
+
+      if (authorFooledMajority) {
+        author.score += 2;
+        author.chameleonWins = (author.chameleonWins || 0) + 1;
+        recapHtml += `<div class="pt-1.5 border-t" style="border-color: var(--card-border);"><strong>🎭 Chameleon Bonus (+2 pts):</strong> ${escapeHtml(author.name)} fooled the room!</div>`;
+      } else {
+        recapHtml += `<div class="pt-1.5 border-t" style="border-color: var(--card-border);"><strong>🎭 Caught:</strong> The room saw through ${escapeHtml(author.name)}'s style.</div>`;
+      }
+
+      document.getElementById('roundPointRecap').innerHTML = recapHtml;
+    }
+
+    function nextCard() {
+      sfxClick();
+      currentCardIndex++;
+      if (currentCardIndex < shuffledDeck.length) {
+        startCardReveal();
+      } else {
+        showGameOver();
+      }
+    }
+
+    function showGameOver() {
+      sfxFanfare();
+      if (window.confetti) {
+        confetti({ particleCount: 110, spread: 90, origin: { y: 0.55 } });
+      }
+
+      const sorted = [...players].sort((a, b) => b.score - a.score);
+      const bestDetective = [...players].sort((a, b) => (b.detectiveHits || 0) - (a.detectiveHits || 0))[0];
+      const bestChameleon = [...players].sort((a, b) => (b.chameleonWins || 0) - (a.chameleonWins || 0))[0];
+
+      document.getElementById('specialAwardsGrid').innerHTML = `
+        <div class="tactile-card rounded-2xl p-3">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider block" style="color: var(--accent-secondary);">🕵️ Top Detective</span>
+          <span class="text-sm sm:text-base font-display font-extrabold block mt-0.5" style="color: var(--text-main);">${escapeHtml(bestDetective.name)}</span>
+          <span class="text-[11px]" style="color: var(--text-muted);">${bestDetective.detectiveHits || 0} accurate reads</span>
+        </div>
+        <div class="tactile-card rounded-2xl p-3">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider block" style="color: var(--accent-secondary);">🎭 Top Chameleon</span>
+          <span class="text-sm sm:text-base font-display font-extrabold block mt-0.5" style="color: var(--text-main);">${escapeHtml(bestChameleon.name)}</span>
+          <span class="text-[11px]" style="color: var(--text-muted);">${bestChameleon.chameleonWins || 0} successful bluffs</span>
+        </div>
+      `;
+
+      const podium = document.getElementById('podiumList');
+      podium.innerHTML = sorted.map((p, idx) => `
+        <div class="flex items-center justify-between p-3 rounded-xl tactile-Well">
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-black" style="color: var(--accent-secondary);">#${idx + 1}</span>
+            <div>
+              <span class="text-sm font-bold block" style="color: var(--text-main);">${escapeHtml(p.name)}</span>
+              <span class="text-[10px]" style="color: var(--text-muted);">${p.detectiveHits || 0} reads · ${p.chameleonWins || 0} bluffs</span>
+            </div>
+          </div>
+          <span class="text-sm font-black font-mono" style="color: var(--text-main);">${p.score} pts</span>
+        </div>
+      `).join('');
+
+      showScreen('gameover');
+    }
+
+    function playAnotherRound() {
+      sfxClick();
+      filterCategory(activeCategory);
+      submissions = [];
+      currentQueueIndex = 0;
+      showScreen('setup');
+    }
+
+    function resetToSetup() {
+      sfxClick();
+      players.forEach(p => { p.score = 0; p.detectiveHits = 0; p.chameleonWins = 0; });
+      showScreen('setup');
+    }
+
+    function returnToSetupConfirm() {
+      if (!screens.setup.classList.contains('hidden')) return;
+      sfxClick();
+      showScreen('setup');
+    }
+
+    function toggleScoreboardModal() {
+      sfxClick();
+      const modal = document.getElementById('scoreModal');
+      const list = document.getElementById('scoreList');
+      const sorted = [...players].sort((a, b) => b.score - a.score);
+
+      list.innerHTML = sorted.map((p, idx) => `
+        <div class="flex justify-between items-center tactile-Well p-3 rounded-xl text-xs">
+          <div class="flex items-center gap-2">
+            <span class="font-bold" style="color: var(--text-dim);">#${idx + 1}</span>
+            <span class="font-bold" style="color: var(--text-main);">${escapeHtml(p.name)}</span>
+          </div>
+          <span class="font-black font-mono" style="color: var(--text-main);">${p.score} pts</span>
+        </div>
+      `).join('');
+
+      modal.classList.toggle('hidden');
+    }
+
+    function openRulesModal() {
+      sfxClick();
+      document.getElementById('rulesModal').classList.remove('hidden');
+    }
+
+    function closeRulesModal() {
+      sfxClick();
+      document.getElementById('rulesModal').classList.add('hidden');
+    }
+
+    document.getElementById('playerNameInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addPlayerFromInput();
+      }
+    });
+
+    function showToast(msg) {
+      const banner = document.createElement('div');
+      banner.className = 'fixed top-16 left-1/2 -translate-x-1/2 z-50 frosted-modal px-4 py-2.5 rounded-2xl text-xs font-bold shadow-2xl transition-all';
+      banner.style.color = 'var(--text-main)';
+      banner.textContent = msg;
+      document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 2400);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function(m) {
+        switch (m) {
+          case '&': return '&amp;';
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '"': return '&quot;';
+          case "'": return '&#039;';
+          default: return m;
+        }
+      });
+    }
+
+    window.addEventListener('load', () => {
+      filterCategory('all');
+      renderPlayerChips();
+    });
+  </script>
+</body>
+</html>
